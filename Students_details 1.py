@@ -1,6 +1,6 @@
 #Maureen Mbugua
 #18/02/2026 
-
+from Reenie import fav_hobby,fav_food,fav_sport,values,trait
 
 print(f"my favourite hobbyis {hobby}")
 print(f"my favourite food is {food}")
