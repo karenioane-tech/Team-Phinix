@@ -1,66 +1,106 @@
-#Date:23/02/2026
+#Date:24/02/2026
 
-students=[]
+import tkinter as tk
+from tkinter import messagebox
+from openpyxl import load_workbook
+import os
 
+file_name= "students.xlsx"
+
+#create Excel file if it doesn't exist
+if not os.path.exists(file_name):
+    from openpyxl import Workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["ID","Name","Course","Phone","Grade"])
+    wb.save(file_name)
+
+#1 Register student
 def register_student():
-    student_id=input("enter student ID")
-    name=input("enter Name:")
-    course=input("enter Course:")
-    phone=input("enter phone number:")
+    student_ID=entry_id.get()
+    name=entry_name.get()
+    course=entry_course.get()
+    phone=entry_phone.get()
 
-    student = {
-        "id": student_id,
-        "name": name,
-        "course": course,
-        "phone": phone,
-        "grade": None
-    }
-    
-    students.append(student)
-    print("student registered successfully")
+    if student_ID=="" or name=="" or course==""or phone=="":
+        messagebox.showerror("Error","all fields are required")
+        return
 
-def display_students():
-    if not students:
-        print("no students registered")
-    else:
-        for student in students:
-            print(student)
+    wb= load_workbook(file_name)
+    ws=wb.active
+    ws.append([student_ID, name, course, phone, ""])
+    wb.save(file_name)
+    messagebox.showinfo("Success","Student Registerd Successsfully")
+    entry_ID.delete(0,tk.END)
+    entry_name.delete(0,tk.END)
+    entry_course.delete(0,tk.END)
+    entry_phone.delete(0,tk.END)
 
-def assign_course_and_grade():
-    student_id=input("enter student ID to update: ")
+#Display students
+def display_student():
+    wb = load_workbook(file_name)
+    ws = wb.active
+    display_window=tk.Toplevel(root)
+    display_window.title("Registered Students")
 
-    for student in students:
-        if student["id"]==student_id:
-            new_course=input("enter new course:")
-            grade=input("enter grade:")
-            student["course"]=new_course
-            student["grade"]=grade
-            print("updated successfully")
+    text=tk.Text(display_window)
+    text.pack()
+
+    for row in ws.iter_rows(values_only=True):
+        text.insert(tk.END,str(row)+ "\n")
+
+#Assign course+ grade
+def assign_grade():
+    student_ID=entry_assign_id.get()
+    grade= entry_grade.get()
+
+    wb=load_workbook(file_name)
+    ws= wb.active
+
+    for row in ws.iter_rows():
+        if str(row[0].value) == student_ID:
+            row[4].value=grade
+            wb.save(file_name)
+            messagebox.showinfo("Success","grade assigned successfully")
             return
-    
-    print("student not found")
+    messagebox.showerror("Error","student ID not found")
 
-def main():
-    while True:
-        print("===School Management System===")
-        print("1. register new student")
-        print("2. display registered student")
-        print("3. assign new course and grade")
-        print("4. exit")
+root = tk.Tk()
+root.title("School Management System")
+root.geometry("400x500")
 
-        choice=input("choose option:")
+tk.Label(root, text="Register New Student", font=("Arial", 14)).pack(pady=5)
 
-        if choice=="1":
-            register_student()
-        elif choice=="2":
-            display_students()
-        elif choice=="3":
-            assign_course_and_grade()
-        elif choice=="4":
-            print("exiting system...")
-            break
-        else:
-            print("invalid option. Try again")
+tk.Label(root, text="ID").pack()
+entry_id = tk.Entry(root)
+entry_id.pack()
 
-if __name__=="__main__":
-    main()
+tk.Label(root, text="Name").pack()
+entry_name = tk.Entry(root)
+entry_name.pack()
+
+tk.Label(root, text="Course").pack()
+entry_course = tk.Entry(root)
+entry_course.pack()
+
+tk.Label(root, text="Phone").pack()
+entry_phone = tk.Entry(root)
+entry_phone.pack()
+
+tk.Button(root, text="Register Student", command=register_student).pack(pady=10)
+
+tk.Button(root, text="Display Registered Students", command=display_student).pack(pady=5)
+
+tk.Label(root, text="Assign Grade", font=("Arial", 14)).pack(pady=10)
+
+tk.Label(root, text="Student ID").pack()
+entry_assign_id = tk.Entry(root)
+entry_assign_id.pack()
+
+tk.Label(root, text="Grade").pack()
+entry_grade = tk.Entry(root)
+entry_grade.pack()
+
+tk.Button(root, text="Assign Grade", command=assign_grade).pack(pady=10)
+
+root.mainloop()
