@@ -31,7 +31,7 @@ def register_student():
     ws.append([student_ID, name, course, phone, ""])
     wb.save(file_name)
     messagebox.showinfo("Success","Student Registerd Successsfully")
-    entry_ID.delete(0,tk.END)
+    entry_id.delete(0,tk.END)
     entry_name.delete(0,tk.END)
     entry_course.delete(0,tk.END)
     entry_phone.delete(0,tk.END)
