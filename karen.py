@@ -1,3 +1,4 @@
+name = "Karen"
 fav_sport="swimming"
 fav_hobby="travelholic"
 fav_color="grey"
